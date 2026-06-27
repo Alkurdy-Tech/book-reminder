@@ -1,4 +1,5 @@
 import 'package:book_reminder/features/home/widget/home_header.dart';
+import 'package:book_reminder/features/home/widget/search_bar.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
@@ -9,7 +10,7 @@ class HomePage extends StatelessWidget {
     return const Scaffold(body: Column(
       children: [
         HomeHeader(),
-        // Search_Bar(),
+        HomeSearchBar(),
         // ProgressBar(),
         // sectionTitle(),
         // ReminderCard(),
