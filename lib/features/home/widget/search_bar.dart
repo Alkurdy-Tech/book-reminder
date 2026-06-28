@@ -9,7 +9,7 @@ class HomeSearchBar extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       child: TextField(
-        onChanged: onChanged,   
+        onChanged: onChanged,
         decoration: InputDecoration(
           hintText: 'Search for books',
           prefixIcon: const Icon(Icons.search_rounded),
