@@ -2,6 +2,7 @@ import 'package:book_reminder/features/home/widgets/home_header.dart';
 import 'package:book_reminder/features/home/widgets/progress_card.dart';
 import 'package:book_reminder/features/home/widgets/search_bar.dart';
 import 'package:book_reminder/features/home/widgets/upcoming_reminder.dart';
+import 'package:book_reminder/features/home/widgets/your_library_section.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
@@ -22,7 +23,8 @@ class HomePage extends StatelessWidget {
               quote: 'A reader lives a thousand lives',
             ),
             UpcomingReminderSection(),
-            // BookCard(),
+            YourLibrarySection(),
+            SizedBox(height: 100,)
           ],
         ),
       ),
