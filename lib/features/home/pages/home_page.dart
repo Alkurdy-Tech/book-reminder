@@ -1,6 +1,7 @@
-import 'package:book_reminder/features/home/widget/home_header.dart';
-import 'package:book_reminder/features/home/widget/progress_card.dart';
-import 'package:book_reminder/features/home/widget/search_bar.dart';
+import 'package:book_reminder/features/home/widgets/home_header.dart';
+import 'package:book_reminder/features/home/widgets/progress_card.dart';
+import 'package:book_reminder/features/home/widgets/search_bar.dart';
+import 'package:book_reminder/features/home/widgets/upcoming_reminder.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
@@ -8,20 +9,23 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(body: Column(
-      children: [
-        HomeHeader(),
-        HomeSearchBar(),
-        ReadingProgressCard(
-          completedBooks: 7,                                                    // these values are hardcoded for now, but they will be dynamic in the future
-          totalBooks: 10,
-          quete: 'A reader lives a thousand lives',
+    return Scaffold(
+      body: SafeArea(
+        child: ListView(
+          children: const [
+            HomeHeader(),
+            HomeSearchBar(),
+            ReadingProgressCard(
+              completedBooks:
+                  7, // these values are hardcoded for now, but they will be dynamic in the future
+              totalBooks: 10,
+              quote: 'A reader lives a thousand lives',
+            ),
+            UpcomingReminderSection(),
+            // BookCard(),
+          ],
         ),
-        // sectionTitle(),
-        // ReminderCard(),
-        // SectionTitle(),
-        // BookCard(),
-      ]
-    ));
+      ),
+    );
   }
 }

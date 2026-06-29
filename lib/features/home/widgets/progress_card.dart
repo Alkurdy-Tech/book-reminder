@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 class ReadingProgressCard extends StatelessWidget {
   final int completedBooks;
   final int totalBooks;
-  final String quete;
+  final String quote;
 
   const ReadingProgressCard({
     super.key,
     required this.completedBooks,
     required this.totalBooks,
-    required this.quete,
+    required this.quote,
   });
 
   @override
