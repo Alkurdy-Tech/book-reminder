@@ -1,3 +1,4 @@
+import 'package:book_reminder/features/books/pages/add_book_page.dart';
 import 'package:book_reminder/features/home/widgets/home_header.dart';
 import 'package:book_reminder/features/home/widgets/reading_progress_card.dart';
 import 'package:book_reminder/features/home/widgets/home_search_bar.dart';
@@ -14,6 +15,10 @@ class HomePage extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // add book to library
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const AddBookPage()),
+          );
         },
         child: const Icon(Icons.add),
       ),
@@ -30,7 +35,7 @@ class HomePage extends StatelessWidget {
             ),
             UpcomingReminderSection(),
             YourLibrarySection(),
-            SizedBox(height: 100,),
+            SizedBox(height: 100),
           ],
         ),
       ),
