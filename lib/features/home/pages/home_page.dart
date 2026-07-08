@@ -1,7 +1,7 @@
 import 'package:book_reminder/features/home/widgets/home_header.dart';
-import 'package:book_reminder/features/home/widgets/progress_card.dart';
-import 'package:book_reminder/features/home/widgets/search_bar.dart';
-import 'package:book_reminder/features/home/widgets/upcoming_reminder.dart';
+import 'package:book_reminder/features/home/widgets/reading_progress_card.dart';
+import 'package:book_reminder/features/home/widgets/home_search_bar.dart';
+import 'package:book_reminder/features/home/widgets/upcoming_reminder_section.dart';
 import 'package:book_reminder/features/home/widgets/your_library_section.dart';
 import 'package:flutter/material.dart';
 
@@ -11,6 +11,12 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // add book to library
+        },
+        child: const Icon(Icons.add),
+      ),
       body: SafeArea(
         child: ListView(
           children: const [
@@ -24,7 +30,7 @@ class HomePage extends StatelessWidget {
             ),
             UpcomingReminderSection(),
             YourLibrarySection(),
-            SizedBox(height: 100,)
+            SizedBox(height: 100,),
           ],
         ),
       ),

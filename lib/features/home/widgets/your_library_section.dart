@@ -1,4 +1,5 @@
-import 'package:book_reminder/features/home/widgets/book_card.dart';
+
+import 'package:book_reminder/features/home/pages/widgets/book_card.dart';
 import 'package:book_reminder/features/home/widgets/section_title.dart';
 import 'package:flutter/material.dart';
 
