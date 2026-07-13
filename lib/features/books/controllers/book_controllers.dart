@@ -1,8 +1,12 @@
 import 'package:book_reminder/features/books/models/book_model.dart';
+import 'package:book_reminder/features/books/repositories/book_repositeries.dart';
 
 class BookController {
+  final BookRepositeries repositeries;
 
-  void addBook(BookModel book) {
-    print('Book added: ${book.title}');
+  BookController({required this.repositeries});
+
+  Future<void> addBook(BookModel book) async {
+    await repositeries.insertBook(book);
   }
 }
