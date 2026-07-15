@@ -1,11 +1,32 @@
 
 import 'package:flutter/material.dart';
-class Addbook extends StatelessWidget {
-  const Addbook({super.key});
+import 'database/app_database.dart';
+import 'database/book_model.dart';
 
-  @override
+
+class Addbook extends StatelessWidget {
+   Addbook({super.key});
+  final TextEditingController titleController = TextEditingController();
+  final TextEditingController authorController = TextEditingController();
+  final TextEditingController pageController = TextEditingController();
+  final TextEditingController genreController = TextEditingController();
+
+  // saveBook now takes context as a parameter, since StatelessWidget has none
+  Future<void> _saveBook(BuildContext context) async {
+    final newBook = Book(
+      title: titleController.text,
+      author: authorController.text,
+      genre: genreController.text,
+      coverPath: "", // placeholder for now — see note below
+      progress: 0.0, // starts unread
+    );
+
+    await AppDatabase.instance.insertBook(newBook);
+    Navigator.pop(context); // go back after saving
+  }
   Widget build(BuildContext context) {
     return Dialog(
+          
       backgroundColor: const Color(0xFFF5F1EA), // light cream background
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
@@ -89,6 +110,7 @@ class Addbook extends StatelessWidget {
               ),
               const SizedBox(height: 6),
               TextField(
+                controller: titleController,
                 decoration: _fieldStyle("Book title"),
               ),
 
@@ -105,6 +127,7 @@ class Addbook extends StatelessWidget {
               ),
               const SizedBox(height: 6),
               TextField(
+                controller: authorController,
                 decoration: _fieldStyle("Author name"),
               ),
 
@@ -129,6 +152,7 @@ class Addbook extends StatelessWidget {
                         TextField(
                           keyboardType: TextInputType.number,
                           decoration: _fieldStyle("320"),
+                          controller: pageController,
                         ),
                       ],
                     ),
@@ -148,6 +172,7 @@ class Addbook extends StatelessWidget {
                         ),
                         const SizedBox(height: 6),
                         TextField(
+                          controller: genreController,
                           decoration: _fieldStyle("Fiction"),
                         ),
                       ],
@@ -206,10 +231,12 @@ class Addbook extends StatelessWidget {
                   ),
                   const SizedBox(width: 12),
                   Expanded(
+         
                     child: ElevatedButton(
                       onPressed: () {
+                        _saveBook(context);
                         // TODO: add your "save book" logic here
-                        Navigator.pop(context);
+                        
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.deepOrange,
