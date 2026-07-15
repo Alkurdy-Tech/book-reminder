@@ -9,4 +9,8 @@ class BookController {
   Future<void> addBook(BookModel book) async {
     await repositeries.insertBook(book);
   }
+
+  Future<List<BookModel>> getBooks() async {
+    return await repositeries.getBooks();
+  }
 }
