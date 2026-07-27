@@ -17,12 +17,13 @@ class AppDatabase {
 
   Future<Database> _initDB() async {
     final dbPath = await getDatabasesPath();
-    final path = join(dbPath, 'books.db');
+    final path = join(dbPath, 'books_v2.db');  // <-- new filename
 
     return await openDatabase(
       path,
-      version: 1,
+      version: 3,
       onCreate: _createTable,
+      onUpgrade: _upgradeDB,
     );
   }
 
@@ -34,9 +35,39 @@ class AppDatabase {
         author TEXT NOT NULL,
         genre TEXT NOT NULL,
         coverPath TEXT NOT NULL,
-        progress REAL NOT NULL
+        totalPages INTEGER NOT NULL,
+        pagesRead INTEGER NOT NULL,
+        isFinished INTEGER NOT NULL DEFAULT 0
       )
     ''');
+     await db.execute('''
+    CREATE TABLE session (
+      id INTEGER PRIMARY KEY,
+      email TEXT,
+      isLoggedIn INTEGER NOT NULL DEFAULT 0
+    )
+  ''');
+  }
+  Future<void> saveSession(String email) async {
+  final db = await instance.database;
+  await db.delete('session'); // only ever keep 1 row
+  await db.insert('session', {'id': 1, 'email': email, 'isLoggedIn': 1});
+}
+
+Future<String?> getSavedEmail() async {
+  final db = await instance.database;
+  final result = await db.query('session', where: 'isLoggedIn = ?', whereArgs: [1]);
+  if (result.isEmpty) return null;
+  return result.first['email'] as String;
+}
+
+Future<void> clearSession() async {
+  final db = await instance.database;
+  await db.delete('session');
+}
+  Future<void> _upgradeDB(Database db, int oldVersion, int newVersion) async {
+    await db.execute('DROP TABLE IF EXISTS books');
+    await _createTable(db, newVersion);
   }
 
   Future<int> insertBook(Book book) async {
@@ -68,4 +99,17 @@ class AppDatabase {
       whereArgs: [id],
     );
   }
+  // Books currently being read (for the top screen)
+Future<List<Book>> getCurrentlyReadingBooks() async {
+  final db = await instance.database;
+  final result = await db.query('books', where: 'isFinished = ?', whereArgs: [0]);
+  return result.map((map) => Book.fromMap(map)).toList();
+}
+
+// Books marked as finished (for fbook.dart)
+Future<List<Book>> getFinishedBooks() async {
+  final db = await instance.database;
+  final result = await db.query('books', where: 'isFinished = ?', whereArgs: [1]);
+  return result.map((map) => Book.fromMap(map)).toList();
+}
 }

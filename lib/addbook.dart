@@ -2,28 +2,51 @@
 import 'package:flutter/material.dart';
 import 'database/app_database.dart';
 import 'database/book_model.dart';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 
-
-class Addbook extends StatelessWidget {
+class Addbook extends StatefulWidget {
    Addbook({super.key});
+
+  @override
+  State<Addbook> createState() => _AddbookState();
+}
+
+class _AddbookState extends State<Addbook> {
   final TextEditingController titleController = TextEditingController();
+
   final TextEditingController authorController = TextEditingController();
+
   final TextEditingController pageController = TextEditingController();
+
   final TextEditingController genreController = TextEditingController();
 
+    File? selectedImage; // holds the picked image file
+
+    Future<void> _pickImage(ImageSource source) async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: source, imageQuality: 80);
+
+    if (pickedFile != null) {
+      setState(() {
+        selectedImage = File(pickedFile.path);
+      });
+    }
+  }
   // saveBook now takes context as a parameter, since StatelessWidget has none
   Future<void> _saveBook(BuildContext context) async {
     final newBook = Book(
-      title: titleController.text,
-      author: authorController.text,
-      genre: genreController.text,
-      coverPath: "", // placeholder for now — see note below
-      progress: 0.0, // starts unread
+    title: titleController.text,
+    author: authorController.text,
+    genre: genreController.text,
+    coverPath: selectedImage?.path ?? "",
+    totalPages: int.tryParse(pageController.text) ?? 0,  // from your page TextField
+    pagesRead: 0,  // starts
     );
-
     await AppDatabase.instance.insertBook(newBook);
     Navigator.pop(context); // go back after saving
   }
+
   Widget build(BuildContext context) {
     return Dialog(
           
@@ -77,25 +100,69 @@ class Addbook extends StatelessWidget {
               const SizedBox(height: 8),
 
               // ---------- PHOTO UPLOAD BOX ----------
-              Container(
+                  GestureDetector(
+              onTap: () {
+                showModalBottomSheet(
+                  context: context,
+                  builder: (context) {
+                    return SafeArea(
+                      child: Wrap(
+                        children: [
+                          ListTile(
+                            leading: Icon(Icons.photo_library),
+                            title: Text("Photo Library"),
+                            onTap: () {
+                              Navigator.pop(context);
+                              _pickImage(ImageSource.gallery);
+                            },
+                          ),
+                          ListTile(
+                            leading: Icon(Icons.camera_alt),
+                            title: Text("Camera"),
+                            onTap: () {
+                              Navigator.pop(context);
+                              _pickImage(ImageSource.camera);
+                            },
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                );
+              },
+              child: Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 24),
+                height: 120,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFEDE6DA),
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: Colors.grey[300]!),
+                  color: const Color(0xFFEFE7DA),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.brown[200]!, style: BorderStyle.solid),
                 ),
-                child: Column(
-                  children: [
-                    const Icon(Icons.image_outlined, size: 24, color: Colors.grey),
-                    const SizedBox(height: 6),
-                    Text(
-                      "Photo Library or Camera",
-                      style: TextStyle(color: Colors.grey[600], fontSize: 13),
-                    ),
-                  ],
-                ),
+                child: selectedImage == null
+                    ? Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.image_outlined, color: Colors.brown[300]),
+                              const SizedBox(width: 6),
+                              Icon(Icons.camera_alt_outlined, color: Colors.brown[300]),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            "Photo Library or Camera",
+                            style: TextStyle(color: Colors.brown[300], fontSize: 13),
+                          ),
+                        ],
+                      )
+                    : ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.file(selectedImage!, fit: BoxFit.cover, width: double.infinity, height: 120),
+                      ),
               ),
+            ),
 
               const SizedBox(height: 16),
 
@@ -193,18 +260,9 @@ class Addbook extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: 8),
+              
 
-              // ---------- ADD TO CHIPS (Reading / Up Next / Finished) ----------
-              Row(
-                children: [
-                  Expanded(child: _statusChip("Reading", selected: false)),
-                  const SizedBox(width: 8),
-                  Expanded(child: _statusChip("Up Next", selected: true)),
-                  const SizedBox(width: 8),
-                  Expanded(child: _statusChip("Finished", selected: false)),
-                ],
-              ),
+              
 
               const SizedBox(height: 20),
 
@@ -275,22 +333,5 @@ class Addbook extends StatelessWidget {
   }
 
   // ---------- Helper: reusable "Reading/Up Next/Finished" chip ----------
-  Widget _statusChip(String label, {required bool selected}) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: selected ? Colors.deepOrange : const Color(0xFFEDE6DA),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Text(
-        label,
-        style: TextStyle(
-          color: selected ? Colors.white : Colors.black87,
-          fontWeight: FontWeight.w600,
-          fontSize: 13,
-        ),
-      ),
-    );
-  }
+  
 }

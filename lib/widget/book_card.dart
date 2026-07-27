@@ -1,3 +1,6 @@
+
+import 'dart:io';
+
 import 'package:book_reminder/database/book_model.dart';
 import 'package:flutter/material.dart';
 
@@ -12,15 +15,24 @@ Widget buildBookCard(Book book) {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // ---------- BOOK COVER (left side) ----------
-        Container(
-          width: 50,
-          height: 75,
-          decoration: BoxDecoration(
-            color: const Color(0xFF1B3A4B),
-            borderRadius: BorderRadius.circular(6),
-            border: Border.all(color: Colors.orange, width: 1.5),
+       Container(
+              width: 50,
+              height: 75,
+              decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(6),
+              border: Border.all(color: Colors.orange, width: 1.5),
+              color: const Color(0xFF1B3A4B), // fallback color if no image
+              ),
+                child: book.coverPath.isNotEmpty
+            ? ClipRRect(
+              borderRadius: BorderRadius.circular(5),
+             child: Image.file(
+             File(book.coverPath),
+            fit: BoxFit.cover,
           ),
-        ),
+        )
+      : null, // shows just the colored box if no cover was set
+   ),
 
         const SizedBox(width: 16),
 

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "248223733643",
+    "project_id": "fbook-3ddfa",
+    "storage_bucket": "fbook-3ddfa.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:248223733643:android:43b68adb128ada8636018e",
+        "android_client_info": {
+          "package_name": "com.example.book_reminder"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAzpYhwiQrpsmH8CsBtqCu9rQniCKnx3uc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

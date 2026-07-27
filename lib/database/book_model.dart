@@ -4,7 +4,9 @@ class Book {
   String author;
   String genre;
   String coverPath;
-  double progress;
+  int totalPages;
+  int pagesRead;
+  int isFinished; // 0 = still reading, 1 = finished (SQLite has no bool type)
 
   Book({
     this.id,
@@ -12,8 +14,12 @@ class Book {
     required this.author,
     required this.genre,
     required this.coverPath,
-    required this.progress,
+    required this.totalPages,
+    required this.pagesRead,
+    this.isFinished = 0, // defaults to "not finished"
   });
+
+  double get progress => totalPages == 0 ? 0.0 : pagesRead / totalPages;
 
   Map<String, dynamic> toMap() {
     return {
@@ -22,7 +28,9 @@ class Book {
       'author': author,
       'genre': genre,
       'coverPath': coverPath,
-      'progress': progress,
+      'totalPages': totalPages,
+      'pagesRead': pagesRead,
+      'isFinished': isFinished,
     };
   }
 
@@ -33,7 +41,9 @@ class Book {
       author: map['author'],
       genre: map['genre'],
       coverPath: map['coverPath'],
-      progress: map['progress'],
+      totalPages: map['totalPages'],
+      pagesRead: map['pagesRead'],
+      isFinished: map['isFinished'],
     );
   }
 }
