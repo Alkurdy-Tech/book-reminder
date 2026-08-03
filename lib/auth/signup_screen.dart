@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'auth_service.dart';
 
@@ -9,6 +10,7 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
+  final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final authService = AuthService();
@@ -18,7 +20,7 @@ class _SignupScreenState extends State<SignupScreen> {
   Future<void> _signUp() async {
     setState(() { isLoading = true; errorMessage = null; });
     try {
-      final user = await authService.signUp(emailController.text.trim(), passwordController.text.trim());
+      final user = await authService.signUp(nameController.text.trim(), emailController.text.trim(), passwordController.text.trim());
       if (user != null && mounted) {
         showDialog(
           context: context,
@@ -26,18 +28,26 @@ class _SignupScreenState extends State<SignupScreen> {
             title: Text("Verify your email"),
             content: Text("We sent a verification link to ${user.email}. Please verify before logging in."),
             actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context); // close dialog
-                  Navigator.pop(context); // go back to login
-                },
-                child: Text("OK"),
-              ),
-            ],
+  TextButton(
+    onPressed: () async {
+      await FirebaseAuth.instance.currentUser?.sendEmailVerification();
+      print("Resent verification email");
+           },
+         child: Text("Resend Email"),
+             ),
+          TextButton(
+    onPressed: () {
+      Navigator.pop(context);
+      Navigator.pop(context);
+    },
+    child: Text("OK"),
+  ),
+],
           ),
         );
       }
     } catch (e) {
+      print("SIGNUP ERROR: $e");
       setState(() { errorMessage = "Sign up failed. Try a different email or stronger password."; });
     } finally {
       setState(() { isLoading = false; });
@@ -57,6 +67,8 @@ class _SignupScreenState extends State<SignupScreen> {
             Text("Create Account", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: const Color(0xFF5C3D2E))),
             const SizedBox(height: 24),
 
+            TextField(controller: nameController, decoration: InputDecoration(labelText: "Name")),
+            const SizedBox(height: 12),
             TextField(controller: emailController, decoration: InputDecoration(labelText: "Email")),
             const SizedBox(height: 12),
             TextField(controller: passwordController, obscureText: true, decoration: InputDecoration(labelText: "Password (min 6 characters)")),
@@ -73,6 +85,7 @@ class _SignupScreenState extends State<SignupScreen> {
               style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFD96C3F)),
               child: isLoading ? CircularProgressIndicator(color: Colors.white) : Text("Sign Up"),
             ),
+            
           ],
         ),
       ),

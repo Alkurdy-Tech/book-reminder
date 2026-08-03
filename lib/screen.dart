@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:book_reminder/addbook.dart';
+import 'package:book_reminder/notification_service.dart';
 import 'package:book_reminder/widget/update_progress_dialog.dart';
 import 'package:flutter/material.dart';
 import 'database/app_database.dart';
@@ -40,6 +41,18 @@ class ScreenState extends State<Screen> {
       return Scaffold(
         body: Center(
           child: Text("No books in progress — add one to get started!"),
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () async {
+            // <-- add async
+            await showDialog(
+              // <-- add await
+              context: context,
+              builder: (context) => Addbook(),
+            );
+            loadBooks(); // <-- refresh after dialog closes
+          },
+          child: const Icon(Icons.add, color: Color.fromARGB(255, 230, 76, 0)),
         ),
       );
     }
@@ -242,11 +255,6 @@ class ScreenState extends State<Screen> {
 
               const SizedBox(height: 16),
 
-            
-              
-
-              
-
               // ---------- BOTTOM BUTTONS ----------
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
@@ -280,8 +288,46 @@ class ScreenState extends State<Screen> {
 
                       // Reminder button (outlined)
                       OutlinedButton.icon(
-                        onPressed: () {
-                          // TODO: add your reminder action here
+                        onPressed: () async {
+                          final pickedTime = await showTimePicker(
+                            context: context,
+                            initialTime: TimeOfDay(
+                              hour: 21,
+                              minute: 0,
+                            ), // default 9 PM
+                          );
+
+                          if (pickedTime != null) {
+                            final now = DateTime.now();
+                            var scheduledDate = DateTime(
+                              now.year,
+                              now.month,
+                              now.day,
+                              pickedTime.hour,
+                              pickedTime.minute,
+                            );
+
+                            // If picked time already passed today, schedule for tomorrow instead
+                            if (scheduledDate.isBefore(now)) {
+                              scheduledDate = scheduledDate.add(
+                                Duration(days: 1),
+                              );
+                            }
+
+                            await NotificationService.instance.scheduleReminder(
+                              id: book.id!,
+                              bookTitle: book.title,
+                              dateTime: scheduledDate,
+                            );
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  '🔔 Reminder set for "${book.title}" — ${pickedTime.format(context)}',
+                                ),
+                              ),
+                            );
+                          }
                         },
                         icon: const Icon(
                           Icons.notifications_none,
@@ -289,7 +335,7 @@ class ScreenState extends State<Screen> {
                           color: Colors.orange,
                         ),
                         label: const Text(
-                          "Tonight at 9 PM",
+                          "Set Reminder",
                           style: TextStyle(color: Colors.orange),
                         ),
                         style: OutlinedButton.styleFrom(
@@ -343,18 +389,19 @@ class ScreenState extends State<Screen> {
             ),
           ),
         ],
-      
-
       ),
-   floatingActionButton: FloatingActionButton(
-      onPressed: () async {                          // <-- add async
-                  await showDialog(                            // <-- add await
-                 context: context,
-                 builder: (context) => Addbook(),
-                           );
-                   loadBooks();                              // <-- refresh after dialog closes
-                   },
-      child: const  Icon(Icons.add, color: Color.fromARGB(255, 230, 76, 0)),
-    ), );
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          // <-- add async
+          await showDialog(
+            // <-- add await
+            context: context,
+            builder: (context) => Addbook(),
+          );
+          loadBooks(); // <-- refresh after dialog closes
+        },
+        child: const Icon(Icons.add, color: Color.fromARGB(255, 230, 76, 0)),
+      ),
+    );
   }
 }

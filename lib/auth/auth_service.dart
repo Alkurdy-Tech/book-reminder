@@ -6,15 +6,17 @@ class AuthService {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   // ---------- EMAIL/PASSWORD SIGNUP ----------
-  Future<User?> signUp(String email, String password) async {
-    final credential = await _auth.createUserWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
-
+  Future<User?> signUp(String name, String email, String password) async {
+  final credential = await _auth.createUserWithEmailAndPassword(
+    email: email,
+    password: password,
+  );
+    await credential.user?.updateDisplayName(name);
+    await credential.user?.reload(); 
     // Send verification email
     await credential.user?.sendEmailVerification();
-
+    print("Verification email sent to $email");
+    print("Verification email sent to ${credential.user?.email}");
     return credential.user;
   }
 

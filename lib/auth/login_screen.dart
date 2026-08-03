@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'auth_service.dart';
 import '../database/app_database.dart';
@@ -23,7 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       final user = await authService.login(emailController.text.trim(), passwordController.text.trim());
       if (user != null) {
-        await AppDatabase.instance.saveSession(user.email ?? "");
+        await AppDatabase.instance.saveSession(user.displayName ?? "", user.email ?? "");
         if (mounted) {
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => homepage ()));
         }
@@ -40,7 +41,7 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       final user = await authService.signInWithGoogle();
       if (user != null) {
-        await AppDatabase.instance.saveSession(user.email ?? "");
+        await AppDatabase.instance.saveSession(user.displayName ?? "", user.email ?? "");
         if (mounted) {
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => homepage ()));
         }
@@ -98,6 +99,7 @@ class _LoginScreenState extends State<LoginScreen> {
               },
               child: Text("Don't have an account? Sign up"),
             ),
+            
           ],
         ),
       ),

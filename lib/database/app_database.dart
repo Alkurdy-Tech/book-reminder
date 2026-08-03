@@ -21,7 +21,7 @@ class AppDatabase {
 
     return await openDatabase(
       path,
-      version: 3,
+      version: 7,
       onCreate: _createTable,
       onUpgrade: _upgradeDB,
     );
@@ -40,25 +40,36 @@ class AppDatabase {
         isFinished INTEGER NOT NULL DEFAULT 0
       )
     ''');
-     await db.execute('''
+    await db.execute('''
     CREATE TABLE session (
       id INTEGER PRIMARY KEY,
+      name TEXT,
       email TEXT,
       isLoggedIn INTEGER NOT NULL DEFAULT 0
     )
   ''');
+  await db.execute('''
+  CREATE TABLE settings (
+    key TEXT PRIMARY KEY,
+    value TEXT
+  )
+''');
   }
-  Future<void> saveSession(String email) async {
+ Future<void> saveSession(String name, String email) async {
   final db = await instance.database;
-  await db.delete('session'); // only ever keep 1 row
-  await db.insert('session', {'id': 1, 'email': email, 'isLoggedIn': 1});
+  await db.delete('session');
+  await db.insert('session', {'id': 1, 'name': name, 'email': email, 'isLoggedIn': 1});
 }
 
-Future<String?> getSavedEmail() async {
+
+Future<Map<String, String>?> getSavedSession() async {
   final db = await instance.database;
   final result = await db.query('session', where: 'isLoggedIn = ?', whereArgs: [1]);
   if (result.isEmpty) return null;
-  return result.first['email'] as String;
+  return {
+    'name': result.first['name'] as String,
+    'email': result.first['email'] as String,
+  };
 }
 
 Future<void> clearSession() async {
@@ -66,10 +77,11 @@ Future<void> clearSession() async {
   await db.delete('session');
 }
   Future<void> _upgradeDB(Database db, int oldVersion, int newVersion) async {
-    await db.execute('DROP TABLE IF EXISTS books');
-    await _createTable(db, newVersion);
-  }
-
+  await db.execute('DROP TABLE IF EXISTS books');
+  await db.execute('DROP TABLE IF EXISTS session');
+  await db.execute('DROP TABLE IF EXISTS settings');
+  await _createTable(db, newVersion);
+}
   Future<int> insertBook(Book book) async {
     final db = await instance.database;
     return await db.insert('books', book.toMap());
@@ -111,5 +123,20 @@ Future<List<Book>> getFinishedBooks() async {
   final db = await instance.database;
   final result = await db.query('books', where: 'isFinished = ?', whereArgs: [1]);
   return result.map((map) => Book.fromMap(map)).toList();
+}
+Future<void> saveTheme(String mode) async {
+  final db = await instance.database;
+  await db.insert(
+    'settings',
+    {'key': 'theme', 'value': mode},
+    conflictAlgorithm: ConflictAlgorithm.replace,
+  );
+}
+
+Future<String?> getSavedTheme() async {
+  final db = await instance.database;
+  final result = await db.query('settings', where: 'key = ?', whereArgs: ['theme']);
+  if (result.isEmpty) return null;
+  return result.first['value'] as String?;
 }
 }
