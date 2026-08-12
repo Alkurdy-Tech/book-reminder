@@ -46,11 +46,22 @@ class AuthService {
   }
 
   // ---------- LOGOUT ----------
-  Future<void> signOut() async {
+ Future<void> signOut() async {
+  try {
     await _auth.signOut();
-    await _googleSignIn.signOut();
+  } catch (e) {
+    print("Firebase sign out error: $e");
   }
 
+  try {
+    await _googleSignIn.signOut();
+  } catch (e) {
+    print("Google sign out error: $e");
+  }
+}
+Future<void> sendPasswordReset(String email) async {
+  await _auth.sendPasswordResetEmail(email: email);
+}
   // ---------- CURRENT USER ----------
   User? get currentUser => _auth.currentUser;
 }

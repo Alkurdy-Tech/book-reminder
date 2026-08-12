@@ -26,6 +26,37 @@ class _FbookState extends State<Fbook> {
     });
   }
 
+  Future<void> _restoreBook(Book book) async {
+    book.isFinished = 0;
+    await AppDatabase.instance.updateBook(book);
+    _loadFinishedBooks(); // refresh, book disappears from this list
+  }
+
+  Future<void> _deleteBook(Book book) async {
+    await AppDatabase.instance.deleteBook(book.id!);
+    _loadFinishedBooks();
+  }
+
+  void _confirmDelete(Book book) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Delete this book?"),
+        content: Text('Are you sure you want to permanently delete "${book.title}"?'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: Text("Cancel")),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              _deleteBook(book);
+            },
+            child: Text("Delete", style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,7 +66,34 @@ class _FbookState extends State<Fbook> {
           : ListView.builder(
               itemCount: finishedBooks.length,
               itemBuilder: (context, index) {
-                return buildBookCard(finishedBooks[index]);
+                final book = finishedBooks[index];
+                return Dismissible(
+                  key: Key(book.id.toString()),
+                  background: Container(
+                    color: Colors.green,
+                    alignment: Alignment.centerLeft,
+                    padding: EdgeInsets.only(left: 20),
+                    child: Icon(Icons.replay, color: Colors.white),
+                  ),
+                  secondaryBackground: Container(
+                    color: Colors.red,
+                    alignment: Alignment.centerRight,
+                    padding: EdgeInsets.only(right: 20),
+                    child: Icon(Icons.delete, color: Colors.white),
+                  ),
+                  confirmDismiss: (direction) async {
+                    if (direction == DismissDirection.startToEnd) {
+                      // swiped right → restore
+                      await _restoreBook(book);
+                      return true;
+                    } else {
+                      // swiped left → confirm delete
+                      _confirmDelete(book);
+                      return false; // don't auto-dismiss, dialog handles it
+                    }
+                  },
+                  child: buildBookCard(book),
+                );
               },
             ),
     );

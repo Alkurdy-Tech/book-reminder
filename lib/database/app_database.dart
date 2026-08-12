@@ -139,4 +139,19 @@ Future<String?> getSavedTheme() async {
   if (result.isEmpty) return null;
   return result.first['value'] as String?;
 }
+Future<void> saveColor(int colorValue) async {
+  final db = await instance.database;
+  await db.insert(
+    'settings',
+    {'key': 'accentColor', 'value': colorValue.toString()},
+    conflictAlgorithm: ConflictAlgorithm.replace,
+  );
+}
+
+Future<int?> getSavedColor() async {
+  final db = await instance.database;
+  final result = await db.query('settings', where: 'key = ?', whereArgs: ['accentColor']);
+  if (result.isEmpty) return null;
+  return int.tryParse(result.first['value'] as String);
+}
 }

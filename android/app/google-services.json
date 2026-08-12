@@ -12,7 +12,20 @@
           "package_name": "com.example.book_reminder"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "248223733643-8a3a13o0vv7anetc8ntj9c0sk4rn7p6c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.book_reminder",
+            "certificate_hash": "e75fcf1d14406379684d4107d611d2c54e6dd6ae"
+          }
+        },
+        {
+          "client_id": "248223733643-58kntjsfnb2goguqm1nk2euekbiekrh5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAzpYhwiQrpsmH8CsBtqCu9rQniCKnx3uc"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "248223733643-58kntjsfnb2goguqm1nk2euekbiekrh5.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "248223733643-kh5d69n5lfcp3ne02tdo849s0onf07jg.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.bookReminder"
+              }
+            }
+          ]
         }
       }
     }

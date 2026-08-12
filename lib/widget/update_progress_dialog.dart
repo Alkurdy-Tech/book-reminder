@@ -25,6 +25,7 @@ void showUpdateProgressDialog(BuildContext context, Book book, VoidCallback onUp
             Text("CURRENT PAGE", style: TextStyle(fontSize: 11, color: Colors.grey[500])),
             const SizedBox(height: 6),
             TextField(
+               style: TextStyle(color: Colors.black87),
               controller: pageController,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
@@ -45,8 +46,8 @@ void showUpdateProgressDialog(BuildContext context, Book book, VoidCallback onUp
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.deepOrange,
-              foregroundColor: Colors.white,
+             
+              
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
             ),
             onPressed: () async {

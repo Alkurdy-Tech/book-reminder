@@ -177,6 +177,7 @@ class _AddbookState extends State<Addbook> {
               ),
               const SizedBox(height: 6),
               TextField(
+                 style: TextStyle(color: Colors.black87),
                 controller: titleController,
                 decoration: _fieldStyle("Book title"),
               ),
@@ -194,6 +195,7 @@ class _AddbookState extends State<Addbook> {
               ),
               const SizedBox(height: 6),
               TextField(
+                style: TextStyle(color: Colors.black87),
                 controller: authorController,
                 decoration: _fieldStyle("Author name"),
               ),
@@ -217,6 +219,7 @@ class _AddbookState extends State<Addbook> {
                         ),
                         const SizedBox(height: 6),
                         TextField(
+                          style: TextStyle(color: Colors.black87),  
                           keyboardType: TextInputType.number,
                           decoration: _fieldStyle("320"),
                           controller: pageController,
@@ -239,6 +242,7 @@ class _AddbookState extends State<Addbook> {
                         ),
                         const SizedBox(height: 6),
                         TextField(
+                          style: TextStyle(color: Colors.black87),  
                           controller: genreController,
                           decoration: _fieldStyle("Fiction"),
                         ),
@@ -297,7 +301,7 @@ class _AddbookState extends State<Addbook> {
                         
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.deepOrange,
+                        
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),

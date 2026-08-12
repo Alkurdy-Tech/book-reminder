@@ -1,6 +1,5 @@
 
 import 'dart:io';
-
 import 'package:book_reminder/database/book_model.dart';
 import 'package:flutter/material.dart';
 
@@ -20,7 +19,7 @@ Widget buildBookCard(Book book) {
               height: 75,
               decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(6),
-              border: Border.all(color: Colors.orange, width: 1.5),
+              border: Border.all(),
               color: const Color(0xFF1B3A4B), // fallback color if no image
               ),
                 child: book.coverPath.isNotEmpty
@@ -58,7 +57,7 @@ Widget buildBookCard(Book book) {
                 book.author,
                 style: TextStyle(
                   fontSize: 14,
-                  color: Colors.grey[600],
+                  color: Colors.black,
                 ),
               ),
 
@@ -73,14 +72,14 @@ Widget buildBookCard(Book book) {
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.orange[100],
+                      
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
                       book.genre,
                       style: TextStyle(
                         fontSize: 12,
-                        color: Colors.orange[800],
+                         color: Colors.black87,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -98,10 +97,8 @@ Widget buildBookCard(Book book) {
                 child: LinearProgressIndicator(
                   value: book.progress, // was hardcoded 0.5
                   minHeight: 6,
-                  backgroundColor: Colors.grey[300],
-                  valueColor: const AlwaysStoppedAnimation<Color>(
-                    Colors.deepOrange,
-                  ),
+                  backgroundColor: const Color.fromARGB(255, 54, 53, 53),
+                  
                 ),
               ),
 
@@ -112,7 +109,7 @@ Widget buildBookCard(Book book) {
                 "${(book.progress * 100).toStringAsFixed(0)}% complete",
                 style: TextStyle(
                   fontSize: 12,
-                  color: Colors.grey[500],
+                  color: Colors.black,
                 ),
               ),
             ],

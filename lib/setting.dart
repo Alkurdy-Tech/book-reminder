@@ -4,7 +4,18 @@ import 'database/app_database.dart';
 import 'auth/auth_service.dart';
 import 'auth/login_screen.dart';
 import 'main.dart'; // for themeNotifier
+ // for accentColorNotifier
+import 'app_colors.dart';
 
+// Add this list near the top of the file
+final List<Color> presetColors = [
+  AppColors.primaryGreen,
+  Colors.deepOrange,
+  Colors.blue,
+  Colors.purple,
+  Colors.teal,
+  Colors.pink,
+];
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
 
@@ -51,7 +62,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Settings")),
+      appBar: AppBar(),
+      
       body: ListView(
         children: [
           // ---------- 1. USER NAME ----------
@@ -84,9 +96,52 @@ class _SettingsScreenState extends State<SettingsScreen> {
             secondary: Icon(Icons.dark_mode_outlined),
             value: isDarkMode,
             onChanged: _toggleDarkMode,
-            activeColor: Colors.deepOrange,
+            
           ),
+           Divider(),
 
+Padding(
+  padding: const EdgeInsets.all(16),
+  child: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Row(
+        children: [
+          Icon(Icons.palette_outlined),
+          const SizedBox(width: 12),
+          Text("App Color", style: TextStyle(fontSize: 16)),
+        ],
+      ),
+      const SizedBox(height: 12),
+      Wrap(
+        spacing: 12,
+        children: presetColors.map((color) {
+          final isSelected = accentColorNotifier.value.toARGB32() == color.toARGB32();
+          return GestureDetector(
+            onTap: () async {
+              accentColorNotifier.value = color;
+              print("Color changed to: $color"); 
+              await AppDatabase.instance.saveColor(color.toARGB32());
+              setState(() {});
+            },
+            child: Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: color,
+                shape: BoxShape.circle,
+                border: isSelected
+                    ? Border.all(color: Colors.black87, width: 3)
+                    : null,
+              ),
+              child: isSelected ? Icon(Icons.check, color: Colors.white, size: 20) : null,
+            ),
+          );
+        }).toList(),
+      ),
+    ],
+  ),
+),
           Divider(),
 
           // ---------- 3. SUPPORT EMAIL ----------

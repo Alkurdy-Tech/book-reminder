@@ -52,7 +52,7 @@ class ScreenState extends State<Screen> {
             );
             loadBooks(); // <-- refresh after dialog closes
           },
-          child: const Icon(Icons.add, color: Color.fromARGB(255, 230, 76, 0)),
+          child: const Icon(Icons.add),
         ),
       );
     }
@@ -73,7 +73,7 @@ class ScreenState extends State<Screen> {
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
-                  color: Colors.brown,
+                  
                   letterSpacing: 1.2,
                 ),
               ),
@@ -121,7 +121,7 @@ class ScreenState extends State<Screen> {
                         0xFF1B3A4B,
                       ), // fallback color if no image
                       borderRadius: BorderRadius.circular(6),
-                      border: Border.all(color: Colors.orange, width: 1.5),
+                      border: Border.all( width: 1.5),
                     ),
                     child: book.coverPath.isNotEmpty
                         ? ClipRRect(
@@ -147,7 +147,7 @@ class ScreenState extends State<Screen> {
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black87,
+                        
                         ),
                       ),
 
@@ -158,7 +158,7 @@ class ScreenState extends State<Screen> {
                         book.author,
                         style: TextStyle(
                           fontSize: 14,
-                          color: Colors.brown[400],
+                        
                         ),
                       ),
 
@@ -183,10 +183,7 @@ class ScreenState extends State<Screen> {
                                     value: book.progress, // 0.0 to 1.0
                                     strokeWidth: 5,
                                     backgroundColor: Colors.grey[300],
-                                    valueColor:
-                                        const AlwaysStoppedAnimation<Color>(
-                                          Colors.deepOrange,
-                                        ),
+                                    
                                   ),
                                 ),
                                 // The "62%" text in the middle
@@ -195,7 +192,7 @@ class ScreenState extends State<Screen> {
                                   style: const TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.black87,
+                                    
                                   ),
                                 ),
                               ],
@@ -213,7 +210,7 @@ class ScreenState extends State<Screen> {
                                 style: const TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w600,
-                                  color: Colors.black87,
+                                  
                                 ),
                               ),
                               const SizedBox(height: 2),
@@ -276,7 +273,7 @@ class ScreenState extends State<Screen> {
                         ),
                         label: const Text("Update Progress"),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.deepOrange,
+                          
                           foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20),
@@ -296,8 +293,10 @@ class ScreenState extends State<Screen> {
                               minute: 0,
                             ), // default 9 PM
                           );
+                          
 
                           if (pickedTime != null) {
+                            print("Time picked: $pickedTime"); // <-- add this
                             final now = DateTime.now();
                             var scheduledDate = DateTime(
                               now.year,
@@ -313,12 +312,13 @@ class ScreenState extends State<Screen> {
                                 Duration(days: 1),
                               );
                             }
-
+                            print("About to schedule for: $scheduledDate");
                             await NotificationService.instance.scheduleReminder(
                               id: book.id!,
                               bookTitle: book.title,
                               dateTime: scheduledDate,
-                            );
+                            ); 
+                            print("scheduleReminder() call completed without throwing");
 
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
@@ -332,14 +332,14 @@ class ScreenState extends State<Screen> {
                         icon: const Icon(
                           Icons.notifications_none,
                           size: 16,
-                          color: Colors.orange,
+                          
                         ),
                         label: const Text(
                           "Set Reminder",
-                          style: TextStyle(color: Colors.orange),
+                          style: TextStyle(),
                         ),
                         style: OutlinedButton.styleFrom(
-                          side: const BorderSide(color: Colors.orange),
+                          
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20),
                           ),
@@ -360,11 +360,11 @@ class ScreenState extends State<Screen> {
                         icon: const Icon(
                           Icons.check_circle_outline,
                           size: 16,
-                          color: Colors.black54,
+                          
                         ),
                         label: const Text(
                           "Mark Finished",
-                          style: TextStyle(color: Colors.black54),
+                          
                         ),
                         style: OutlinedButton.styleFrom(
                           side: BorderSide(color: Colors.grey[300]!),
@@ -400,7 +400,7 @@ class ScreenState extends State<Screen> {
           );
           loadBooks(); // <-- refresh after dialog closes
         },
-        child: const Icon(Icons.add, color: Color.fromARGB(255, 230, 76, 0)),
+        child: const Icon(Icons.add, ),
       ),
     );
   }

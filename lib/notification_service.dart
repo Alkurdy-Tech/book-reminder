@@ -1,7 +1,7 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
-
+import 'package:flutter_timezone/flutter_timezone.dart';
 class NotificationService {
   static final NotificationService instance = NotificationService._internal();
   NotificationService._internal();
@@ -10,7 +10,8 @@ class NotificationService {
 
   Future<void> init() async {
   tz.initializeTimeZones();
-
+   final String currentTimeZone = await FlutterTimezone.getLocalTimezone();
+    tz.setLocalLocation(tz.getLocation(currentTimeZone));
   const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
   const iosSettings = DarwinInitializationSettings(
     requestAlertPermission: true,
@@ -32,12 +33,11 @@ class NotificationService {
   required int id,
   required String bookTitle,
   required DateTime dateTime,
-  
-})
+}) async {
+  print("Scheduling for TZDateTime: ${tz.TZDateTime.from(dateTime, tz.local)}");
+  print("Current TZDateTime now: ${tz.TZDateTime.now(tz.local)}");
 
- async {
   await _notifications.zonedSchedule(
-    
     id,
     "Time to read 📖",
     "Don't forget to continue reading \"$bookTitle\"",
@@ -52,12 +52,13 @@ class NotificationService {
       ),
     ),
     androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-    uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime, // <-- add this line
-    matchDateTimeComponents: DateTimeComponents.time,
+    uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
+    // matchDateTimeComponents removed for now — this makes it fire once, not daily
   );
 }
 
   Future<void> cancelReminder(int id) async {
     await _notifications.cancel(id);
   }
+  
 }

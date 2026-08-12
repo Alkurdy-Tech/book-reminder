@@ -16,6 +16,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final authService = AuthService();
   String? errorMessage;
   bool isLoading = false;
+   bool obscurePassword = true; 
 
   Future<void> _signUp() async {
     setState(() { isLoading = true; errorMessage = null; });
@@ -64,14 +65,28 @@ class _SignupScreenState extends State<SignupScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text("Create Account", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: const Color(0xFF5C3D2E))),
+            Text("Create Account", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold,)),
             const SizedBox(height: 24),
 
             TextField(controller: nameController, decoration: InputDecoration(labelText: "Name")),
             const SizedBox(height: 12),
             TextField(controller: emailController, decoration: InputDecoration(labelText: "Email")),
             const SizedBox(height: 12),
-            TextField(controller: passwordController, obscureText: true, decoration: InputDecoration(labelText: "Password (min 6 characters)")),
+            TextField(
+              controller: passwordController,
+              obscureText: obscurePassword,
+              decoration: InputDecoration(
+                labelText: "Password (min 6 characters)",
+                suffixIcon: IconButton(
+                  icon: Icon(obscurePassword ? Icons.visibility : Icons.visibility_off),
+                  onPressed: () {
+                    setState(() {
+                      obscurePassword = !obscurePassword;
+                    });
+                  },
+                ),
+              ),
+            ),
 
             if (errorMessage != null) ...[
               const SizedBox(height: 8),
@@ -82,7 +97,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
             ElevatedButton(
               onPressed: isLoading ? null : _signUp,
-              style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFD96C3F)),
+              style: ElevatedButton.styleFrom(),
               child: isLoading ? CircularProgressIndicator(color: Colors.white) : Text("Sign Up"),
             ),
             
